@@ -17,8 +17,9 @@ parser = argparse.ArgumentParser(description='Train_Parameters')
 parser.add_argument('--dataset_root', dest='dataset_root', default='datasets', help='the dataset root path')
 parser.add_argument('--dataset_A_dir', dest='dataset_A_dir', default='Classical',
                     help='path of the dataset of domain A')
-parser.add_argument('--dataset_A_dir', dest='dataset_B_dir', default='Jazz', help='path of the dataset of domain B')
+parser.add_argument('--dataset_B_dir', dest='dataset_B_dir', default='Jazz', help='path of the dataset of domain B')
 
+args = parser.parse_args()
 # is_best用来选择保存最佳模型
 def save_checkpoint(state, checkpoint_dir, is_best = False, filename='checkpoint.pth.tar'):
     torch.save(state, os.path.join(checkpoint_dir,filename))
@@ -123,12 +124,12 @@ def sample_model(samples, sample_dir, epoch, idx):
     if not os.path.exists(os.path.join(sample_dir, 'A2B')):
         os.makedirs(os.path.join(sample_dir, 'A2B'))
 
-    save_midis(samples[0], './{}/A2B/{:02d}_{:04d}_origin.mid'.format(sample_dir, epoch, idx))
-    save_midis(samples[1], './{}/A2B/{:02d}_{:04d}_transfer.mid'.format(sample_dir, epoch, idx))
-    save_midis(samples[2], './{}/A2B/{:02d}_{:04d}_cycle.mid'.format(sample_dir, epoch, idx))
-    save_midis(samples[3], './{}/B2A/{:02d}_{:04d}_origin.mid'.format(sample_dir, epoch, idx))
-    save_midis(samples[4], './{}/B2A/{:02d}_{:04d}_transfer.mid'.format(sample_dir, epoch, idx))
-    save_midis(samples[5], './{}/B2A/{:02d}_{:04d}_cycle.mid'.format(sample_dir, epoch, idx))
+    save_midis(samples[0], '{}/A2B/{:02d}_{:04d}_origin.mid'.format(sample_dir, epoch, idx))
+    save_midis(samples[1], '{}/A2B/{:02d}_{:04d}_transfer.mid'.format(sample_dir, epoch, idx))
+    save_midis(samples[2], '{}/A2B/{:02d}_{:04d}_cycle.mid'.format(sample_dir, epoch, idx))
+    # save_midis(samples[3], './{}/B2A/{:02d}_{:04d}_origin.mid'.format(sample_dir, epoch, idx))
+    # save_midis(samples[4], './{}/B2A/{:02d}_{:04d}_transfer.mid'.format(sample_dir, epoch, idx))
+    # save_midis(samples[5], './{}/B2A/{:02d}_{:04d}_cycle.mid'.format(sample_dir, epoch, idx))
 
 
 def save_midis(bars, file_path, tempo=80.0):

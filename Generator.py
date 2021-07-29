@@ -5,8 +5,8 @@
 #@Software :PyCharm
 import torch.nn as nn
 import torch
-from ..module.GeneratorNode import EncorderNode,DecorderNode
-from ..module.ResNetBlock import ResNetBlock
+from GeneratorNode import EncorderNode,DecorderNode
+from ResNetBlock import ResNetBlock
 from utils import kernel_initializer
 from utils import padding
 
@@ -23,8 +23,8 @@ class Generator(nn.Module):
 
 
         self.Decorder = nn.Sequential(
-            DecorderNode(in_dim=4 * out_dim, out_dim=2 * out_dim, kernel_size=3, stride=2, padding=1),
-            DecorderNode(in_dim=2 * out_dim, out_dim=out_dim, kernel_size=3, stride=2, padding=1)
+            DecorderNode(in_dim=4 * out_dim, out_dim=2 * out_dim, kernel_size=3, stride=2, padding=1, output_padding=1),
+            DecorderNode(in_dim=2 * out_dim, out_dim=out_dim, kernel_size=3, stride=2, padding=1, output_padding=1)
         )
 
         self.output = nn.Conv2d(in_channels=out_dim,out_channels=1,kernel_size=7,stride=1,bias=False)
@@ -36,7 +36,7 @@ class Generator(nn.Module):
         x = self.Encorder(x)
         for i in range(10):
             x = self.ResNet[i](x)
-        x = self.Decorder
+        x = self.Decorder(x)
         x = padding(x)
         x = self.output(x)
         return torch.sigmoid(x)

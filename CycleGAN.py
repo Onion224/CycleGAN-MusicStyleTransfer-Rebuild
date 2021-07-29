@@ -3,9 +3,8 @@
 # @Author :Onion
 # @File :CycleGAN.py
 # @Software :PyCharm
-import torch
-from ..module.Generator import Generator
-from ..module.Discriminator import Discriminator
+from Generator import Generator
+from Discriminator import Discriminator
 from utils import *
 from losses import cycle_loss, mse_criterion
 
@@ -26,9 +25,8 @@ class CycleGAN(nn.Module):
         self.discriminatorB_all = Discriminator(64)
         self.sigma = args.sigma
         self.gamma = args.gamma
-        self.mode = args.mode
         self.lamb = args.lamb
-        self.sampler = Sampler(args.max_size)
+        self.sampler = Sampler(args.sample_size)
         self.args = args
 
     def forward(self, data, optimizer_Disc, optimizer_Gen, epoch, idx, train_num, counter):
@@ -89,7 +87,7 @@ class CycleGAN(nn.Module):
         # 训练判别器
         # 梯度置零
         optimizer_Disc.zero_grad()
-        D_loss.backward(retain_Train=True)
+        D_loss.backward(retain_graph=True)
         optimizer_Disc.step()
 
         # Generator loss
@@ -115,3 +113,4 @@ class CycleGAN(nn.Module):
               (epoch + 1, self.args.epochs, (idx + 1) * self.args.batch_size, train_num, counter, G_loss, D_loss))
 
         return samples
+

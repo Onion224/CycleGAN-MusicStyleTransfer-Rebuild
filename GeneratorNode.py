@@ -25,9 +25,9 @@ class EncorderNode(nn.Module):
 
 
 class DecorderNode(nn.Module):
-    def __init__(self, in_dim, out_dim, kernel_size, stride, padding):
+    def __init__(self, in_dim, out_dim, kernel_size, stride, padding, output_padding):
         super(DecorderNode, self).__init__()
-        self.transconv2d = nn.ConvTranspose2d(in_dim, out_dim, kernel_size, stride, padding, bias=False)
+        self.transconv2d = nn.ConvTranspose2d(in_dim, out_dim, kernel_size, stride, padding, output_padding, bias=False)
         self.instancenorm = nn.InstanceNorm2d(out_dim, affine=True)
         self.relu = nn.ReLU(inplace=True)
         self.transconv2d.weight = kernel_initializer(self.transconv2d.weight)

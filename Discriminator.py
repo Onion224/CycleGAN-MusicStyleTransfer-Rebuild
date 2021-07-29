@@ -4,7 +4,7 @@
 #@File :Discriminator.py
 #@Software :PyCharm
 import torch.nn as nn
-from ..module.DiscriminatorNode import DiscriminatorNode
+from DiscriminatorNode import DiscriminatorNode
 class Discriminator(nn.Module):
     def __init__(self,out_dim=64):
         super(Discriminator,self).__init__()
