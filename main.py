@@ -164,8 +164,6 @@ if __name__ == '__main__':
             for idx, data in enumerate(music_dataloader):
                 samples = model(data, optimizer_Disc, optimizer_Gen, epoch, idx, train_num, counter)
 
-
-                # 将samples中的Tensor数据转为numpy后保存为midi
                 for i in range(len(samples)):
                     samples[i] = samples[i].transpose((0, 2, 3, 1))
 
