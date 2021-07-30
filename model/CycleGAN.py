@@ -44,45 +44,27 @@ class CycleGAN(nn.Module):
         real_B = torch.FloatTensor(real_B).to(device)
         real_mixed = torch.FloatTensor(real_mixed).to(device)
 
-        # real_A = real_A.detach().cpu().numpy()
-        # real_B = real_B.detach().cpu().numpy()
 
         # A2B
         fake_B = self.generatorA2B(real_A)
         cycle_A = self.generatorB2A(fake_B)
 
-        # 测试一下
-        # real_A = real_A.detach().cpu().numpy()
-        # real_B = real_B.detach().cpu().numpy()
-
         # B2A
         fake_A = self.generatorB2A(real_B)
         cycle_B = self.generatorA2B(fake_A)
 
-        # 测试一下
-        # real_A = real_A.detach().cpu().numpy()
-        # real_B = real_B.detach().cpu().numpy()
 
         [sample_fake_A, sample_fake_B] = self.sampler([fake_A, fake_B])
-        # 这个函数(kernel_initializer)有问题,改变了real_A的值
-
-        # gauss_noise = kernel_initializer(real_A, mean=0, std=self.sigma)
 
         gauss_noise = np.abs(np.random.normal(0, self.sigma, [self.batch_size, self.input_nc, self.time_step, self.pitch_range])).astype(np.float32)
         gauss_noise = torch.FloatTensor(gauss_noise).to(device)
 
-        # 测试一下
-        # real_A = real_A.detach().cpu().numpy()
-        # real_B = real_B.detach().cpu().numpy()
 
         DA_real = self.discriminatorA(real_A + gauss_noise)
         DA_fake = self.discriminatorA(fake_A + gauss_noise)
         DB_real = self.discriminatorB(real_B + gauss_noise)
         DB_fake = self.discriminatorB(fake_B + gauss_noise)
 
-        # 测试一下
-        # real_A = real_A.detach().cpu().numpy()
-        # real_B = real_B.detach().cpu().numpy()
 
         DA_fake_sample = self.discriminatorA(sample_fake_A + gauss_noise)
         DB_fake_sample = self.discriminatorB(sample_fake_B + gauss_noise)
@@ -93,9 +75,6 @@ class CycleGAN(nn.Module):
         DA_fake_sample_all = self.discriminatorA_all(sample_fake_A + gauss_noise)
         DB_fake_sample_all = self.discriminatorB_all(sample_fake_B + gauss_noise)
 
-        # 测试一下
-        # real_A = real_A.detach().cpu().numpy()
-        # real_B = real_B.detach().cpu().numpy()
 
         # Generator loss
         optimizer_Gen.zero_grad()

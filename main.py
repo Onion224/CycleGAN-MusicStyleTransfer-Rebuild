@@ -12,7 +12,7 @@ from model.Classifier import Classifier
 from torch import optim
 from torch.utils.data import DataLoader
 from utils import sample_model, save_checkpoint
-from dataloader import MusicDataSet, ToTensor
+from dataloader.dataloader import MusicDataSet, ToTensor
 
 # 只训练full类型的模型,其余的没有考虑,并且只做了A2B,没有做B2A
 
