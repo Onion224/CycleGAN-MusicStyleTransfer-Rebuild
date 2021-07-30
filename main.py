@@ -7,8 +7,8 @@ import os
 import argparse
 import glob
 import torch
-from CycleGAN import CycleGAN
-from Classifier import Classifier
+from model.CycleGAN import CycleGAN
+from model.Classifier import Classifier
 from torch import optim
 from torch.utils.data import DataLoader
 from utils import sample_model, save_checkpoint
@@ -23,7 +23,7 @@ parser.add_argument('--domainB', dest='domainB', default='Jazz', help='Genre B')
 parser.add_argument('--batch_size', dest='batch_size', type=int, default=5, help='music in batch')
 parser.add_argument('--epochs', dest='epochs', type=int, default=50, help='number of epoch')
 parser.add_argument('--pitch_range', dest='pitch_range', type=int, default=84, help='pitch range of pianoroll')
-parser.add_argument('--time_step', dest='time_step', type=int, default=96, help='time steps of pianoroll')
+parser.add_argument('--time_step', dest='time_step', type=int, default=64, help='time steps of pianoroll')
 parser.add_argument('--lr', dest='lr', type=float, default=0.0002, help='initial learning rate for adam')
 # parser.add_argument('--which_direction', dest='which_direction', default='AtoB', help='AtoB or BtoA')
 parser.add_argument('--mode', dest='mode', default='train', help='train, test')
@@ -43,7 +43,8 @@ parser.add_argument('--sigma', dest='sigma', type=float, default=0.01,help='sigm
 parser.add_argument('--gamma', dest='gamma', type=float, default=1.0, help='weight of extra discriminators')
 parser.add_argument('--lamb', dest='lamb', type=float, default=10.0, help='weight on L1 term in objective')
 parser.add_argument('--sample_size', dest='sample_size', type=int, default=50, help='max size of sample pool, 0 means do not use sample pool')
-
+parser.add_argument('--input_nc', dest='input_nc', type=int, default=1, help='# of input data channels')
+parser.add_argument('--output_nc', dest='output_nc', type=int, default=1, help='# of output data channels')
 # 初始化参数
 args = parser.parse_args()
 
@@ -149,21 +150,24 @@ if __name__ == '__main__':
     if not os.path.exists(args.test_dir):
         os.makedirs(args.test_dir)
     # 该路径用来放想要做风格迁移的mid音乐
-    if not os.path.exists(args.transform):
-        os.makedirs(args.transform)
+    if not os.path.exists(args.transfer):
+        os.makedirs(args.transfer)
+
 
     print("-------start training-------")
     counter = 0
     # 分别训练CycleGAN和分类器
     if args.type == 'cyclegan':
+
         for epoch in range(0, args.epochs):
 
             for idx, data in enumerate(music_dataloader):
                 samples = model(data, optimizer_Disc, optimizer_Gen, epoch, idx, train_num, counter)
 
+
                 # 将samples中的Tensor数据转为numpy后保存为midi
                 for i in range(len(samples)):
-                    samples[i] = samples[i].permute(0, 2, 3, 1).detach().cpu().numpy()
+                    samples[i] = samples[i].transpose((0, 2, 3, 1))
 
                 sample_dir = os.path.join(args.sample_dir)
 

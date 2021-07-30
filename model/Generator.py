@@ -5,8 +5,8 @@
 #@Software :PyCharm
 import torch.nn as nn
 import torch
-from GeneratorNode import EncorderNode,DecorderNode
-from ResNetBlock import ResNetBlock
+from model.GeneratorNode import EncorderNode,DecorderNode
+from model.ResNetBlock import ResNetBlock
 from utils import kernel_initializer
 from utils import padding
 

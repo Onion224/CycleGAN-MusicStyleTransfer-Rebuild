@@ -10,17 +10,17 @@
 import torch
 from torch.nn import functional as F
 
+
 # L1损失函数(MAE):torch.nn.L1Loss()
 def mae_criterion(pred, target):
     criterion = torch.nn.L1Loss(reduction='mean')
     return criterion(pred, target)
-# L2损失函数(MSE)
-def mse_criterion(pred, target):
-    criterion = torch.nn.MSELoss(reduction='mean')
-    return criterion(pred, target)
 
 # L1损失函数(MAE):F.l1_loss(pred,target),cycle_loss则是将两个相加
 def cycle_loss(real_a, cycle_a, real_b, cycle_b):
-    return F.l1_loss(cycle_a, real_a, reduction='mean') + F.l1_loss(cycle_b, real_b, reduction='mean')
+
+    l1_loss = torch.nn.L1Loss()
+
+    return l1_loss(cycle_a, real_a) + l1_loss(cycle_b, real_b)
 
 

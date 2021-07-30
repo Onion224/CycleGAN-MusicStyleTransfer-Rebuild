@@ -6,7 +6,7 @@
 import os
 import glob as glob
 import torch
-from CycleGAN import CycleGAN
+from model.CycleGAN import CycleGAN
 # 测试集的路径
 from main import args
 from dataloader import MusicDataSet, ToTensor
