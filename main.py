@@ -93,12 +93,12 @@ if torch.cuda.is_available():
     model.to(device)
 
 # 加载已经存在的模型
-if os.path.exists(os.path.join(args.checkpoint_dir, 'checkpoint.pth.tar')):
+if os.path.exists(os.path.join(args.checkpoint_dir, '{}2{}checkpoint.pth.tar'.format(args.domainA,args.domainB))):
     # load existing model
     print('==> loading existing model')
     # 加载CycleGAN模型
     if args.type == 'cyclegan':
-        model_info = torch.load(os.path.join(args.checkpoint_dir, 'checkpoint.pth.tar'))
+        model_info = torch.load(os.path.join(args.checkpoint_dir, '{}2{}checkpoint.pth.tar'.format(args.domainA,args.domainB)))
         model.load_state_dict(model_info['state_dict'])
         # optimizer = torch.optim.Adam(model.parameters())
         optimizer_Gen = torch.optim.Adam(list(model.generatorA2B.parameters()) + list(model.generatorB2A.parameters()))
@@ -110,6 +110,7 @@ if os.path.exists(os.path.join(args.checkpoint_dir, 'checkpoint.pth.tar')):
 
         optimizer_Gen.load_state_dict(model_info['optimizer_Gen'])
         optimizer_Disc.load_state_dict(model_info['optimizer_Disc'])
+        cur_epoch = model_info['epoch']
     # 加载classifier模型
     else:
 
@@ -159,9 +160,10 @@ if __name__ == '__main__':
     # 分别训练CycleGAN和分类器
     if args.type == 'cyclegan':
 
-        for epoch in range(0, args.epochs):
+        for epoch in range(cur_epoch, args.epochs):
 
             for idx, data in enumerate(music_dataloader):
+
                 samples = model(data, optimizer_Disc, optimizer_Gen, epoch, idx, train_num, counter)
 
                 for i in range(len(samples)):
@@ -182,10 +184,12 @@ if __name__ == '__main__':
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
                 'optimizer_Gen': optimizer_Gen.state_dict(),
-                'optimizer_Disc': optimizer_Disc.state_dict()
+                'optimizer_Disc': optimizer_Disc.state_dict(),
+                'GeneratorA2B': model.generatorA2B.state_dict(),
+                'GeneratorB2A': model.generatorB2A.state_dict()
             },
                 checkpoint_dir=args.checkpoint_dir,
-                filename='{}2{}checkpoint.pth.tar'.format(args.domainA , args.domainB))
+                filename='{}2{}checkpoint.pth.tar'.format(args.domainA, args.domainB))
 
     if args.type == 'classifier':
 
